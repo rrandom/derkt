@@ -21,28 +21,32 @@
           (- t1-end t1-start)
           (quotient (current-memory-use) (* 1024 1024)))
 
-  ;; Phase 2: Resolving Instructions (Lazy + No Output)
+  ;; Phase 2: Resolving Instructions (Lazy + Port Reuse + No Output)
   (define t2-start (current-milliseconds))
   (define ver (HbcHeader-version (HBCFile-header hbc)))
-  (for ([f-idx (in-range (vector-length (HBCFile-function-headers hbc)))])
-    (define insts (get-instructions-for-function hbc f-idx))
-    (for ([inst insts])
-      (let ([opcode (vector-ref (struct->vector inst) 1)])
-        (resolve-instruction hbc inst opcode ver))))
+  (call-with-input-file (HBCFile-source-path hbc) #:mode 'binary
+    (lambda (in)
+      (for ([f-idx (in-range (vector-length (HBCFile-function-headers hbc)))])
+        (define insts (get-instructions-for-function hbc f-idx in))
+        (for ([inst insts])
+          (let ([opcode (vector-ref (struct->vector inst) 1)])
+            (resolve-instruction hbc inst opcode ver))))))
   (define t2-end (current-milliseconds))
-  (printf "Phase 2 (Lazy Resolution - No I/O): ~a ms, Memory: ~a MB\n"
+  (printf "Phase 2 (Lazy + Port Reuse - No I/O): ~a ms, Memory: ~a MB\n"
           (- t2-end t2-start)
           (quotient (current-memory-use) (* 1024 1024)))
 
-  ;; Phase 3: Optimized Resolution + Printing (Lazy + Centralized Printer)
+  ;; Phase 3: Optimized Resolution + Printing (Lazy + Port Reuse + Centralized Printer)
   (define t3-start (current-milliseconds))
   (define out (open-output-nowhere))
-  (for ([f-idx (in-range (vector-length (HBCFile-function-headers hbc)))])
-    (define insts (get-instructions-for-function hbc f-idx))
-    (for ([inst insts])
-      (print-instruction hbc inst out ver)))
+  (call-with-input-file (HBCFile-source-path hbc) #:mode 'binary
+    (lambda (in)
+      (for ([f-idx (in-range (vector-length (HBCFile-function-headers hbc)))])
+        (define insts (get-instructions-for-function hbc f-idx in))
+        (for ([inst insts])
+          (print-instruction hbc inst out ver)))))
   (define t3-end (current-milliseconds))
-  (printf "Phase 3 (Lazy + Centralized Printer): ~a ms, Memory: ~a MB\n"
+  (printf "Phase 3 (Lazy + Port Reuse + Centralized Printer): ~a ms, Memory: ~a MB\n"
           (- t3-end t3-start)
           (quotient (current-memory-use) (* 1024 1024)))
 
