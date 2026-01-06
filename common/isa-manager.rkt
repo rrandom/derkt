@@ -1,15 +1,18 @@
 #lang racket
 
-(provide get-decoder)
+(provide get-decoder get-metadata)
 
 (require racket/runtime-path)
 (define-runtime-path isa-dir "../isa")
 
+(define (get-isa-path ver)
+  (define base-path (build-path isa-dir (format "hermes-instructions-v~a.rkt" ver)))
+  (if (file-exists? base-path)
+      base-path
+      (build-path isa-dir "hermes-instructions-v96.rkt")))
+
 (define (get-decoder ver)
-  (define filename (format "hermes-instructions-v~a.rkt" ver))
-  (define path (build-path isa-dir filename))
-  (if (file-exists? path)
-      (dynamic-require path 'decode-instruction)
-      (begin
-        (printf "Warning: No decoder for v~a, fallback to v96\n" ver)
-        (dynamic-require (build-path isa-dir "hermes-instructions-v96.rkt") 'decode-instruction))))
+  (dynamic-require (get-isa-path ver) 'decode-instruction))
+
+(define (get-metadata ver)
+  (dynamic-require (get-isa-path ver) 'instruction-metadata))

@@ -1,7 +1,7 @@
 #lang racket
 
-(require (for-syntax racket/base syntax/parse racket/syntax "decode.rkt"))
-(require "decode.rkt")
+(require (for-syntax racket/base syntax/parse racket/syntax "decode.rkt" racket/string))
+(require "decode.rkt" "../model/hbc.rkt")
 
 (provide (all-defined-out))
 
@@ -27,11 +27,18 @@
                            (with-syntax ([reader (get-reader-id stx (syntax-e t))]) #'(reader port))))
          #`[(#,code) (#,s-name #,code #,@readers)]))
 
+     (define metadata-entries
+       (for/list ([code (syntax->list #'(opcode ...))]
+                  [name (syntax->list #'(mnemonic ...))]
+                  [types-stx (syntax->list #'((op-type ...) ...))])
+         (with-syntax ([c code] [n name] [(t ...) types-stx])
+           #'(cons c (list 'n (list 't ...))))))
+
      #`(begin
          #,@struct-defs
          (define #,metadata-id
-           (make-immutable-hash
-            (list (cons opcode (list 'mnemonic (list 'op-type ...))) ...)))
+           (make-immutable-hash (list #,@metadata-entries)))
+
          (define (#,decode-id port)
            (define op (read-byte port))
            (cond [(eof-object? op) eof]

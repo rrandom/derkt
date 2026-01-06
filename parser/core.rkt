@@ -14,21 +14,15 @@
 
 (define (parse-hbc-file filename)
   (define port (open-input-file filename #:mode 'binary))
-  (displayln "Reading Header...")
   (define header (read-HbcHeader port))
 
   (unless (= (HbcHeader-magic header) HBC_MAGIC)
     (error "Invalid Hermes Magic Number"))
 
   (define ver (HbcHeader-version header))
-  (printf "HBC Version: ~a\n" ver)
-  (printf "Function Count: ~a\n" (HbcHeader-function-count header))
-
-  (displayln "Reading Function Headers...")
   (define f-headers (for/list ([i (in-range (HbcHeader-function-count header))])
                       (read-function-header port ver)))
 
-  (displayln "Reading Tables...")
   (define s-kinds (read-string-kinds port header))
   (define id-hashes (read-identifier-hashes port header))
   (define s-table (read-small-string-table port header))
@@ -45,14 +39,11 @@
   (define cjs-mods (read-cjs-module-table port header))
   (define fs-entries (read-function-source-table port header))
 
-  (displayln "Reading Debug Info...")
   (define d-info (read-debug-info port header))
 
-  (displayln "Disassembling all functions...")
   (define decoder (get-decoder ver))
   (define d-functions (for/list ([fh f-headers]) (disassemble-function port fh decoder)))
 
-  (displayln "Reading Footer...")
   (define footer (decode-bytes port 20))
 
   (close-input-port port)
