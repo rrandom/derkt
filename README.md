@@ -35,13 +35,25 @@ derkt/
 - **Modular Architecture**: Separated concerns for models, low-level decoding, and high-level parsing logic.
 - **Support for Large Bundles**: Optimized to parse and disassemble production bundles with tens of thousands of functions.
 
-## Usage
+## Installation
 
-### Disassemble an HBC File
+To install `derkt` as a Racket package from its source directory:
 
 ```powershell
-racket main.rkt [path_to_hbc_file]
+raco pkg install
 ```
+
+Once installed, you can use the `raco derkt` command.
+
+## Usage
+
+### Using raco (Recommended)
+
+```powershell
+raco derkt [path_to_hbc_file]
+```
+
+### Run from Source
 
 If no path is provided, it defaults to a pre-defined production bundle path. It is recommended to redirect output to a file for large bundles:
 
@@ -90,4 +102,4 @@ Use the `define-bitfield-struct` macro:
 
 ## License
 
-This project is for educational and research purposes.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
