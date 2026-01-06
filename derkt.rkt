@@ -24,6 +24,6 @@
             (if (null? is)
                 (reverse acc)
                 (let* ([inst (first is)]
-                       [opcode (vector-ref (struct->vector inst) 1)]
+                       [opcode (second inst)]
                        [h (instruction->hash hbc inst opcode ver idx offset)])
                   (loop (rest is) (+ idx 1) (+ offset 1) (cons h acc))))))))

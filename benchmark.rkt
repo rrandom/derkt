@@ -29,14 +29,14 @@
       (for ([f-idx (in-range (vector-length (HBCFile-function-headers hbc)))])
         (define insts (get-instructions-for-function hbc f-idx in))
         (for ([inst insts])
-          (let ([opcode (vector-ref (struct->vector inst) 1)])
+          (let ([opcode (second inst)])
             (resolve-instruction hbc inst opcode ver))))))
   (define t2-end (current-milliseconds))
-  (printf "Phase 2 (Lazy + Port Reuse - No I/O): ~a ms, Memory: ~a MB\n"
+  (printf "Phase 2 (Lazy + S-Exp + Port Reuse - No I/O): ~a ms, Memory: ~a MB\n"
           (- t2-end t2-start)
           (quotient (current-memory-use) (* 1024 1024)))
 
-  ;; Phase 3: Optimized Resolution + Printing (Lazy + Port Reuse + Centralized Printer)
+  ;; Phase 3: Optimized Resolution + Printing (Lazy + S-Exp + Port Reuse + Centralized Printer)
   (define t3-start (current-milliseconds))
   (define out (open-output-nowhere))
   (call-with-input-file (HBCFile-source-path hbc) #:mode 'binary

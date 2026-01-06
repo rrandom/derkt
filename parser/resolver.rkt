@@ -15,7 +15,7 @@
 (define (get-instruction-metadata ver)
   (hash-ref! metadata-cache ver (lambda () (get-metadata ver))))
 
-;; Optimized resolution that uses your core string caching idea
+;; Optimized resolution for S-expressions: '(Mnemonic Opcode Arg1 Arg2 ...)
 (define (resolve-instruction hbc inst opcode ver)
   (define metadata (get-instruction-metadata ver))
   (define info (hash-ref metadata opcode #f))
@@ -24,27 +24,26 @@
   (define mnemonic (first info))
   (define arg-types (second info))
 
-  ;; struct->vector is slow, but consistent.
-  ;; We drop the first 2 fields: the struct name and the op-code field.
-  (define raw-args (drop (vector->list (struct->vector inst)) 2))
+  ;; Simply drop the first 2 elements: Mnemonic and Opcode
+  (define raw-args (drop inst 2))
 
   (define resolved-args
     (for/list ([arg raw-args] [type arg-types])
       (if (string-prefix? (symbol->string type) "StringID")
-          (get-hbc-string hbc arg) ; Hits the string-cache in HBCFile
+          (get-hbc-string hbc arg)
           arg)))
 
   (values mnemonic resolved-args))
 
-;; High-speed printer: Uses the shared metadata to avoid huge generated code in ISA files.
+;; High-speed printer for S-expressions
 (define (print-instruction hbc inst out ver)
-  (define opcode (vector-ref (struct->vector inst) 1))
+  (define mnemonic (first inst))
+  (define opcode (second inst))
   (define metadata (get-instruction-metadata ver))
   (define info (hash-ref metadata opcode #f))
   (if info
-      (let ([mnemonic (first info)]
-            [arg-types (second info)]
-            [raw-args (drop (vector->list (struct->vector inst)) 2)])
+      (let ([arg-types (second info)]
+            [raw-args (drop inst 2)])
         (fprintf out "~a" mnemonic)
         (unless (empty? arg-types) (display "  " out))
         (for ([arg raw-args] [type arg-types] [idx (in-naturals)])
@@ -55,7 +54,7 @@
         (newline out))
       (fprintf out "Unknown Instruction (Opcode: ~a)\n" opcode)))
 
-;; Converts an instruction to a JSON-compatible hash.
+;; Converts an S-expression instruction to a JSON-compatible hash.
 (define (instruction->hash hbc inst opcode ver index offset)
   (let-values ([(name args) (resolve-instruction hbc inst opcode ver)])
     (define metadata (get-instruction-metadata ver))

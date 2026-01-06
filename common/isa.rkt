@@ -11,21 +11,14 @@
      (define decode-id (datum->syntax stx 'decode-instruction))
      (define metadata-id (datum->syntax stx 'instruction-metadata))
 
-     (define struct-defs
-       (for/list ([name (syntax->list #'(mnemonic ...))]
-                  [types-stx (syntax->list #'((op-type ...) ...))])
-         (define s-name (format-id stx "Inst-~a" name))
-         (define fields (for/list ([i (in-range (length (syntax->list types-stx)))]) (format-id stx "op~a" i)))
-         #`(struct #,s-name (op-code #,@fields) #:transparent)))
-
+     ;; Now producing a simple list: (Mnemonic Opcode Op1 Op2 ...)
      (define cases
        (for/list ([code (syntax->list #'(opcode ...))]
                   [name (syntax->list #'(mnemonic ...))]
                   [types-stx (syntax->list #'((op-type ...) ...))])
-         (define s-name (format-id stx "Inst-~a" name))
          (define readers (for/list ([t (syntax->list types-stx)])
                            (with-syntax ([reader (get-reader-id stx (syntax-e t))]) #'(reader port))))
-         #`[(#,code) (#,s-name #,code #,@readers)]))
+         #`[(#,code) (list '#,name #,code #,@readers)]))
 
      (define metadata-entries
        (for/list ([code (syntax->list #'(opcode ...))]
@@ -35,7 +28,6 @@
            #'(cons c (list 'n (list 't ...))))))
 
      #`(begin
-         #,@struct-defs
          (define #,metadata-id
            (make-immutable-hash (list #,@metadata-entries)))
 
