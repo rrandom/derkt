@@ -1,0 +1,223 @@
+Reading Header...
+HBC Version: 94
+Function Count: 8
+Reading Function Headers...
+Reading Tables...
+Reading Debug Info...
+Disassembling all functions...
+Reading Footer...
+
+Successfully parsed HBC file: .\tests\sample.hbc
+HBC Version: 94
+Number of functions: 8
+
+Function #0:
+  Offset: 0x320
+  Instructions:
+    #(struct:Inst-DeclareGlobalVar 17)
+    #(struct:Inst-DeclareGlobalVar 19)
+    #(struct:Inst-DeclareGlobalVar 25)
+    #(struct:Inst-CreateEnvironment 1)
+    #(struct:Inst-CreateAsyncClosure 2 1 1)
+    #(struct:Inst-GetGlobalObject 0)
+    #(struct:Inst-PutById 0 2 1 17)
+    #(struct:Inst-CreateGeneratorClosure 2 1 4)
+    #(struct:Inst-PutById 0 2 2 19)
+    #(struct:Inst-CreateClosure 1 1 6)
+    #(struct:Inst-PutById 0 1 3 25)
+    #(struct:Inst-TryGetById 2 0 1 32)
+    #(struct:Inst-GetByIdShort 1 0 2 25)
+    #(struct:Inst-PutById 2 1 4 23)
+    #(struct:Inst-GetByIdShort 1 0 2 25)
+    #(struct:Inst-LoadConstUndefined 4)
+    #(struct:Inst-Call1 1 1 4)
+    #(struct:Inst-CreateRegExp 1 12 13 0)
+    #(struct:Inst-PutById 0 1 5 29)
+    #(struct:Inst-TryGetById 3 0 3 27)
+    #(struct:Inst-GetByIdShort 2 3 4 24)
+    #(struct:Inst-TryGetById 6 0 5 29)
+    #(struct:Inst-GetByIdShort 5 6 6 26)
+    #(struct:Inst-LoadConstString 1 11)
+    #(struct:Inst-Call2 1 5 6 1)
+    #(struct:Inst-Call2 1 2 3 1)
+    #(struct:Inst-TryGetById 5 0 3 27)
+    #(struct:Inst-GetByIdShort 3 5 4 24)
+    #(struct:Inst-GetByIdShort 1 0 7 19)
+    #(struct:Inst-Call1 2 1 4)
+    #(struct:Inst-GetByIdShort 1 2 8 20)
+    #(struct:Inst-Call1 2 1 2)
+    #(struct:Inst-LoadConstString 1 8)
+    #(struct:Inst-Call3 1 3 5 1 2)
+    #(struct:Inst-TryGetById 3 0 3 27)
+    #(struct:Inst-GetByIdShort 2 3 4 24)
+    #(struct:Inst-GetByIdShort 1 0 9 17)
+    #(struct:Inst-LoadConstDouble 5 7.3)
+    #(struct:Inst-LoadConstString 0 14)
+    #(struct:Inst-Add 0 5 0)
+    #(struct:Inst-Call2 1 1 4 0)
+    #(struct:Inst-GetByIdShort 0 1 8 20)
+    #(struct:Inst-Call1 1 0 1)
+    #(struct:Inst-LoadConstString 0 10)
+    #(struct:Inst-Call3 0 2 3 0 1)
+    #(struct:Inst-Ret 0)
+
+Function #1:
+  Offset: 0x40b
+  Instructions:
+    #(struct:Inst-LoadConstUndefined 4)
+    #(struct:Inst-LoadConstUndefined 0)
+    #(struct:Inst-ReifyArguments 0)
+    #(struct:Inst-Mov 3 0)
+    #(struct:Inst-GetBuiltinClosure 2 52)
+    #(struct:Inst-CreateEnvironment 0)
+    #(struct:Inst-CreateGeneratorClosure 1 0 2)
+    #(struct:Inst-LoadThisNS 0)
+    #(struct:Inst-Call4 0 2 4 1 0 3)
+    #(struct:Inst-Ret 0)
+
+Function #2:
+  Offset: 0x429
+  Instructions:
+    #(struct:Inst-CreateEnvironment 0)
+    #(struct:Inst-CreateGenerator 0 0 3)
+    #(struct:Inst-Ret 0)
+
+Function #3:
+  Offset: 0x432
+  Instructions:
+    #(struct:Inst-StartGenerator)
+    #(struct:Inst-ResumeGenerator 0 1)
+    #(struct:Inst-JmpTrue 117 1)
+    #(struct:Inst-GetGlobalObject 4)
+    #(struct:Inst-GetByIdShort 2 4 1 17)
+    #(struct:Inst-TryGetById 3 4 2 29)
+    #(struct:Inst-LoadConstUInt8 5 42)
+    #(struct:Inst-LoadConstString 1 16)
+    #(struct:Inst-Add 1 5 1)
+    #(struct:Inst-Add 1 1 3)
+    #(struct:Inst-LoadConstUndefined 3)
+    #(struct:Inst-Call2 1 2 3 1)
+    #(struct:Inst-SaveGenerator 4)
+    #(struct:Inst-Ret 1)
+    #(struct:Inst-ResumeGenerator 1 2)
+    #(struct:Inst-JmpTrue 69 2)
+    #(struct:Inst-GetByIdShort 2 4 3 19)
+    #(struct:Inst-Call1 2 2 3)
+    #(struct:Inst-SaveGenerator 4)
+    #(struct:Inst-Ret 2)
+    #(struct:Inst-ResumeGenerator 2 5)
+    #(struct:Inst-JmpTrue 47 5)
+    #(struct:Inst-TryGetById 7 4 4 27)
+    #(struct:Inst-GetByIdShort 6 7 5 24)
+    #(struct:Inst-LoadParam 5 1)
+    #(struct:Inst-Call2 5 6 7 5)
+    #(struct:Inst-TryGetById 6 4 4 27)
+    #(struct:Inst-GetByIdShort 5 6 5 24)
+    #(struct:Inst-TryGetById 4 4 6 18)
+    #(struct:Inst-Call2 4 5 6 4)
+    #(struct:Inst-CompleteGenerator)
+    #(struct:Inst-Ret 3)
+    #(struct:Inst-CompleteGenerator)
+    #(struct:Inst-Ret 2)
+    #(struct:Inst-CompleteGenerator)
+    #(struct:Inst-Ret 1)
+    #(struct:Inst-CompleteGenerator)
+    #(struct:Inst-Ret 0)
+
+Function #4:
+  Offset: 0x4ae
+  Instructions:
+    #(struct:Inst-CreateEnvironment 0)
+    #(struct:Inst-CreateGenerator 0 0 5)
+    #(struct:Inst-Ret 0)
+
+Function #5:
+  Offset: 0x4b7
+  Instructions:
+    #(struct:Inst-StartGenerator)
+    #(struct:Inst-LoadConstUndefined 2)
+    #(struct:Inst-LoadConstUndefined 3)
+    #(struct:Inst-ResumeGenerator 0 1)
+    #(struct:Inst-JmpTrueLong 168 1)
+    #(struct:Inst-LoadConstUInt8 1 42)
+    #(struct:Inst-SaveGenerator 4)
+    #(struct:Inst-Ret 1)
+    #(struct:Inst-ResumeGenerator 1 4)
+    #(struct:Inst-JmpTrueLong 149 4)
+    #(struct:Inst-GetGlobalObject 4)
+    #(struct:Inst-GetByIdShort 4 4 1 19)
+    #(struct:Inst-Call1 5 4 2)
+    #(struct:Inst-GetByIdShort 4 5 2 20)
+    #(struct:Inst-Call1 4 4 5)
+    #(struct:Inst-Jmp 21)
+    #(struct:Inst-Catch 4)
+    #(struct:Inst-GetGlobalObject 4)
+    #(struct:Inst-TryGetById 5 4 3 33)
+    #(struct:Inst-LoadConstString 4 6)
+    #(struct:Inst-Call2 4 5 2 4)
+    #(struct:Inst-Jmp 99)
+    #(struct:Inst-Catch 3)
+    #(struct:Inst-LoadConstInt 5 432)
+    #(struct:Inst-LoadConstString 4 15)
+    #(struct:Inst-Mul 5 5 4)
+    #(struct:Inst-LoadConstInt 4 478)
+    #(struct:Inst-AddN 4 5 4)
+    #(struct:Inst-JmpFalse 50 4)
+    #(struct:Inst-GetGlobalObject 4)
+    #(struct:Inst-TryGetById 6 4 4 27)
+    #(struct:Inst-GetByIdShort 5 6 5 24)
+    #(struct:Inst-Mov 7 3)
+    #(struct:Inst-LoadConstString 3 5)
+    #(struct:Inst-Add 4 3 7)
+    #(struct:Inst-LoadConstInt 3 340000)
+    #(struct:Inst-Mul 7 7 3)
+    #(struct:Inst-LoadConstUInt8 3 6)
+    #(struct:Inst-AddN 3 7 3)
+    #(struct:Inst-Call3 3 5 6 4 3)
+    #(struct:Inst-Jmp 21)
+    #(struct:Inst-Catch 3)
+    #(struct:Inst-GetGlobalObject 3)
+    #(struct:Inst-TryGetById 4 3 6 21)
+    #(struct:Inst-LoadConstString 3 4)
+    #(struct:Inst-Call2 3 4 2 3)
+    #(struct:Inst-CompleteGenerator)
+    #(struct:Inst-Ret 2)
+    #(struct:Inst-CompleteGenerator)
+    #(struct:Inst-Ret 1)
+    #(struct:Inst-CompleteGenerator)
+    #(struct:Inst-Ret 0)
+
+Function #6:
+  Offset: 0x56a
+  Instructions:
+    #(struct:Inst-LoadConstUndefined 0)
+    #(struct:Inst-CreateEnvironment 3)
+    #(struct:Inst-GetGlobalObject 1)
+    #(struct:Inst-TryGetById 4 1 1 30)
+    #(struct:Inst-GetByIdShort 2 4 2 22)
+    #(struct:Inst-Call1 2 2 4)
+    #(struct:Inst-JmpTrue 9 2)
+    #(struct:Inst-StoreNPToEnvironment 3 0 0)
+    #(struct:Inst-Jmp 24)
+    #(struct:Inst-CreateClosure 2 3 7)
+    #(struct:Inst-StoreToEnvironment 3 0 2)
+    #(struct:Inst-Call1 2 2 0)
+    #(struct:Inst-GetByIdShort 1 1 3 25)
+    #(struct:Inst-Call1 1 1 0)
+    #(struct:Inst-Ret 0)
+
+Function #7:
+  Offset: 0x5a0
+  Instructions:
+    #(struct:Inst-GetGlobalObject 0)
+    #(struct:Inst-TryGetById 1 0 1 28)
+    #(struct:Inst-GetByIdShort 0 1 2 31)
+    #(struct:Inst-Call1 0 0 1)
+    #(struct:Inst-JmpFalse 16 0)
+    #(struct:Inst-GetEnvironment 0 0)
+    #(struct:Inst-LoadFromEnvironment 1 0 0)
+    #(struct:Inst-LoadConstUndefined 0)
+    #(struct:Inst-Call1 0 1 0)
+    #(struct:Inst-LoadConstUndefined 0)
+    #(struct:Inst-Ret 0)
+
