@@ -57,6 +57,8 @@
 
   (close-input-port port)
 
+  (define s-cache (make-vector (vector-length s-table) #f))
+
   (HBCFile header f-headers d-functions s-kinds id-hashes s-table s-storage
            os-table a-buffer ok-buffer ov-buffer bi-table bi-storage re-table re-storage
-           cjs-mods fs-entries d-info footer))
+           cjs-mods fs-entries d-info s-cache footer))

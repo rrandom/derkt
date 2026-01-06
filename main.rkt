@@ -1,6 +1,8 @@
 #lang racket
 
 (require "parser/core.rkt")
+(require "parser/resolver.rkt")
+(require "parser/tables.rkt")
 (require "model/header.rkt")
 (require "model/hbc.rkt")
 (require "model/function-header.rkt")
@@ -21,12 +23,15 @@
         (printf "HBC Version: ~a\n" (HbcHeader-version (HBCFile-header hbc)))
         (printf "Number of functions: ~a\n\n" (HbcHeader-function-count (HBCFile-header hbc)))
 
+        (define ver (HbcHeader-version (HBCFile-header hbc)))
         (for ([fh (HBCFile-function-headers hbc)]
               [insts (HBCFile-disassembled-functions hbc)]
               [idx (in-naturals)])
           (printf "Function #~a:\n" idx)
           (printf "  Offset: 0x~x\n" (function-header-offset fh))
           (printf "  Instructions:\n")
-          (for ([inst insts]) (printf "    ~a\n" inst))
+          (for ([inst insts])
+            (let-values ([(name args) (resolve-instruction hbc inst (vector-ref (struct->vector inst) 1) ver)])
+              (printf "    ~a  ~a\n" name (string-join (map ~a args) ", "))))
           (newline)))
       (error "File not found:" filename)))

@@ -61,9 +61,9 @@
                  disassembled-functions
                  string-kinds
                  identifier-hashes
+                 small-string-table
                  string-storage
-                 string-storage-bytes
-                 overflow-string-storage
+                 overflow-string-table
                  array-buffer-storage
                  object-key-buffer
                  object-value-buffer
@@ -74,5 +74,6 @@
                  cjs-modules
                  function-source-entries
                  debug-info
+                 string-cache
                  footer)
   #:transparent)
