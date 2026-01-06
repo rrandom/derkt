@@ -26,6 +26,7 @@
         (printf "Number of functions: ~a\n\n" (HbcHeader-function-count (HBCFile-header hbc)))
 
         (define ver (HbcHeader-version (HBCFile-header hbc)))
+        (define metadata (get-instruction-metadata ver))
         (call-with-input-file (HBCFile-source-path hbc) #:mode 'binary
           (lambda (in)
             (for ([fh (HBCFile-function-headers hbc)]
@@ -35,6 +36,6 @@
               (define insts (get-instructions-for-function hbc idx in))
               (for ([inst insts])
                 (display "    ")
-                (print-instruction hbc inst (current-output-port) ver))
+                (print-instruction hbc inst (current-output-port) metadata))
               (newline)))))
       (error "File not found:" filename)))

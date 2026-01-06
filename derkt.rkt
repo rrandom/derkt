@@ -16,6 +16,7 @@
 ;; Converts the entire HBC file disassembly into a JSON-serializable structure.
 (define (hbc->json-serializable hbc)
   (define ver (HbcHeader-version (HBCFile-header hbc)))
+  (define metadata (get-instruction-metadata ver))
   (for/list ([f-idx (in-range (vector-length (HBCFile-function-headers hbc)))])
     (define insts (get-instructions-for-function hbc f-idx))
     (hash 'function_index f-idx
@@ -25,5 +26,5 @@
                 (reverse acc)
                 (let* ([inst (first is)]
                        [opcode (second inst)]
-                       [h (instruction->hash hbc inst opcode ver idx offset)])
+                       [h (instruction->hash hbc inst opcode metadata idx offset)])
                   (loop (rest is) (+ idx 1) (+ offset 1) (cons h acc))))))))
