@@ -8,6 +8,7 @@
 (require "model/hbc.rkt")
 (require "model/function-header.rkt")
 (require "parser/functions.rkt")
+(require "parser/parallel.rkt")
 
 ;; =============================================================================
 ;; derkt - Hermes Bytecode Disassembler
@@ -25,17 +26,16 @@
         (printf "HBC Version: ~a\n" (HbcHeader-version (HBCFile-header hbc)))
         (printf "Number of functions: ~a\n\n" (HbcHeader-function-count (HBCFile-header hbc)))
 
-        (define ver (HbcHeader-version (HBCFile-header hbc)))
-        (define metadata (get-instruction-metadata ver))
-        (call-with-input-file (HBCFile-source-path hbc) #:mode 'binary
-          (lambda (in)
-            (for ([fh (HBCFile-function-headers hbc)]
-                  [idx (in-naturals)])
-              (printf "Function #~a:\n" idx)
-              (printf "  Offset: 0x~x\n" (function-header-offset fh))
-              (define insts (get-instructions-for-function hbc idx in))
-              (for ([inst insts])
-                (display "    ")
-                (print-instruction hbc inst (current-output-port) metadata))
-              (newline)))))
+        (printf "Disassembling ~a functions in parallel...\n"
+                (HbcHeader-function-count (HBCFile-header hbc)))
+
+        (define results (parallel-disassemble-ordered filename 'text))
+
+        (for ([text results]
+              [fh (HBCFile-function-headers hbc)]
+              [idx (in-naturals)])
+          (printf "Function #~a:\n" idx)
+          (printf "  Offset: 0x~x\n" (function-header-offset fh))
+          (display text)
+          (newline)))
       (error "File not found:" filename)))

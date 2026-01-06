@@ -3,15 +3,18 @@
 (require "parser/core.rkt")
 (require "parser/resolver.rkt")
 (require "parser/functions.rkt")
+(require "parser/parallel.rkt")
 (require "model/hbc.rkt")
 (require "model/header.rkt")
 
 (provide (all-from-out "parser/core.rkt")
          (all-from-out "parser/resolver.rkt")
          (all-from-out "parser/functions.rkt")
+         (all-from-out "parser/parallel.rkt")
          (all-from-out "model/hbc.rkt")
          (all-from-out "model/header.rkt")
-         hbc->json-serializable)
+         hbc->json-serializable
+         hbc->json-serializable-parallel)
 
 ;; Converts the entire HBC file disassembly into a JSON-serializable structure.
 (define (hbc->json-serializable hbc)
@@ -19,12 +22,20 @@
   (define metadata (get-instruction-metadata ver))
   (for/list ([f-idx (in-range (vector-length (HBCFile-function-headers hbc)))])
     (define insts (get-instructions-for-function hbc f-idx))
-    (hash 'function_index f-idx
-          'instructions
-          (let loop ([is insts] [idx 0] [offset 0] [acc '()])
-            (if (null? is)
-                (reverse acc)
-                (let* ([inst (first is)]
-                       [opcode (second inst)]
-                       [h (instruction->hash hbc inst opcode metadata idx offset)])
-                  (loop (rest is) (+ idx 1) (+ offset 1) (cons h acc))))))))
+    (process-function-insts hbc insts metadata f-idx ver)))
+
+;; High-performance parallel version of JSON serialization.
+(define (hbc->json-serializable-parallel filename)
+  (define hbc (parse-hbc-file filename))
+  (define ver (HbcHeader-version (HBCFile-header hbc)))
+  (define metadata (get-instruction-metadata ver))
+  ;; Use 'data mode to get raw instruction lists from workers
+  (define all-insts (parallel-disassemble-ordered filename 'data))
+  (for/list ([insts all-insts] [f-idx (in-naturals)])
+    (process-function-insts hbc insts metadata f-idx ver)))
+
+(define (process-function-insts hbc insts metadata f-idx ver)
+  (hash 'function_index f-idx
+        'instructions
+        (for/list ([inst insts] [idx (in-naturals)] [offset (in-naturals)])
+          (instruction->hash hbc inst (second inst) metadata idx offset))))

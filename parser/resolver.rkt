@@ -40,8 +40,9 @@
 
   (define resolved-args
     (for/list ([arg raw-args] [type arg-types])
-      (cond [(eq? type 'StringID) (get-hbc-string hbc arg)]
-            [else arg])))
+      (if (string-prefix? (symbol->string type) "StringID")
+          (get-hbc-string hbc arg)
+          arg)))
 
   (values mnemonic resolved-args))
 
@@ -60,7 +61,8 @@
             (unless (null? args)
               (unless first? (display ", " out))
               (let ([arg (car args)] [type (car types)])
-                (cond [(eq? type 'StringID) (display (get-hbc-string hbc arg) out)]
+                (cond [(string-prefix? (symbol->string type) "StringID")
+                       (display (get-hbc-string hbc arg) out)]
                       [(and (exact-integer? arg) (>= arg 0) (< arg 256))
                        (if (memq type '(Reg8 Reg32))
                            (display (vector-ref reg-string-cache arg) out)
