@@ -7,6 +7,7 @@
 (require "model/header.rkt")
 (require "model/hbc.rkt")
 (require "model/function-header.rkt")
+(require "parser/functions.rkt")
 
 ;; =============================================================================
 ;; derkt - Hermes Bytecode Disassembler
@@ -26,10 +27,10 @@
 
         (define ver (HbcHeader-version (HBCFile-header hbc)))
         (for ([fh (HBCFile-function-headers hbc)]
-              [insts (HBCFile-disassembled-functions hbc)]
               [idx (in-naturals)])
           (printf "Function #~a:\n" idx)
           (printf "  Offset: 0x~x\n" (function-header-offset fh))
+          (define insts (get-instructions-for-function hbc idx))
           (for ([inst insts])
             (display "    ")
             (print-instruction hbc inst (current-output-port) ver))

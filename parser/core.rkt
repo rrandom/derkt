@@ -20,7 +20,7 @@
     (error "Invalid Hermes Magic Number"))
 
   (define ver (HbcHeader-version header))
-  (define f-headers (for/list ([i (in-range (HbcHeader-function-count header))])
+  (define f-headers (for/vector ([i (in-range (HbcHeader-function-count header))])
                       (read-function-header port ver)))
 
   (define s-kinds (read-string-kinds port header))
@@ -41,15 +41,11 @@
 
   (define d-info (read-debug-info port header))
 
-  (define decoder (get-decoder ver))
-  (define d-functions (for/list ([fh f-headers]) (disassemble-function port fh decoder)))
-
   (define footer (decode-bytes port 20))
-
   (close-input-port port)
 
   (define s-cache (make-vector (vector-length s-table) #f))
 
-  (HBCFile header f-headers d-functions s-kinds id-hashes s-table s-storage
+  (HBCFile header f-headers s-kinds id-hashes s-table s-storage
            os-table a-buffer ok-buffer ov-buffer bi-table bi-storage re-table re-storage
-           cjs-mods fs-entries d-info s-cache footer))
+           cjs-mods fs-entries d-info s-cache footer filename))

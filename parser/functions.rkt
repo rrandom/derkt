@@ -4,8 +4,17 @@
 (require "../model/header.rkt")
 (require "../model/hbc.rkt")
 (require "../model/function-header.rkt")
+(require "../common/isa-manager.rkt")
 
 (provide (all-defined-out))
+
+(define (get-instructions-for-function hbc func-id)
+  (define fh (vector-ref (HBCFile-function-headers hbc) func-id))
+  (define ver (HbcHeader-version (HBCFile-header hbc)))
+  (define decoder (get-decoder ver))
+  (call-with-input-file (HBCFile-source-path hbc) #:mode 'binary
+    (lambda (port)
+      (disassemble-function port fh decoder))))
 
 (define (read-DebugInfoOffsets port ver)
   (align-reader port 4)

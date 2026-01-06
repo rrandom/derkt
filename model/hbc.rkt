@@ -58,7 +58,6 @@
 
 (struct HBCFile (header
                  function-headers
-                 disassembled-functions
                  string-kinds
                  identifier-hashes
                  small-string-table
@@ -75,5 +74,6 @@
                  function-source-entries
                  debug-info
                  string-cache
-                 footer)
+                 footer
+                 source-path)
   #:transparent)
