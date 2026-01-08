@@ -8,4 +8,4 @@
 (define pkg-authors '("rrandom"))
 
 (define raco-commands
-  '(("derkt" derkt/main "disassemble Hermes bytecode" #f)))
+  '(("derkt" derkt/main "disassemble Hermes bytecode (text or hasm)" #f)))

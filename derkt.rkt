@@ -14,7 +14,8 @@
          (all-from-out "model/hbc.rkt")
          (all-from-out "model/header.rkt")
          hbc->json-serializable
-         hbc->json-serializable-parallel)
+         hbc->json-serializable-parallel
+         get-function-hasm)
 
 ;; Converts the entire HBC file disassembly into a JSON-serializable structure.
 (define (hbc->json-serializable hbc)
@@ -40,3 +41,16 @@
         (for/list ([paired-inst insts] [idx (in-naturals)])
           (define inst (cdr paired-inst))
           (instruction->hash hbc paired-inst (second inst) metadata idx 0))))
+
+;; High-level API to get "HASM" (Hermes Assembly) format for a single function.
+;; Returns: (list (offset . (Mnemonic Opcode Op1 Op2 ...)) ...)
+(define (get-function-hasm hbc f-idx)
+  (define ver (HbcHeader-version (HBCFile-header hbc)))
+  (define metadata (get-instruction-metadata ver))
+  (define insts (get-instructions-for-function hbc f-idx))
+  (for/list ([paired-inst insts])
+    (define offset (car paired-inst))
+    (define inst (cdr paired-inst))
+    (define-values (mnemonic resolved-args)
+      (resolve-instruction hbc paired-inst (second inst) metadata))
+    (cons offset (cons mnemonic resolved-args))))
