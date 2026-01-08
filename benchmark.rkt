@@ -33,9 +33,9 @@
     (lambda (in)
       (for ([f-idx (in-range (vector-length (HBCFile-function-headers hbc)))])
         (define insts (get-instructions-for-function hbc f-idx in))
-        (for ([inst insts])
-          (let ([opcode (second inst)])
-            (resolve-instruction hbc inst opcode metadata-vec))))))
+        (for ([paired-inst insts])
+          (let ([opcode (second (cdr paired-inst))])
+            (resolve-instruction hbc paired-inst opcode metadata-vec))))))
   (define t2-end (current-milliseconds))
   (printf "Phase 2 (Lazy + S-Exp + Port Reuse - No I/O): ~a ms, Memory: ~a MB\n"
           (- t2-end t2-start)
@@ -48,8 +48,8 @@
     (lambda (in)
       (for ([f-idx (in-range (vector-length (HBCFile-function-headers hbc)))])
         (define insts (get-instructions-for-function hbc f-idx in))
-        (for ([inst insts])
-          (print-instruction hbc inst out metadata-vec)))))
+        (for ([paired-inst insts])
+          (print-instruction hbc paired-inst out metadata-vec)))))
   (define t3-end (current-milliseconds))
   (printf "Phase 3 (Lazy + Port Reuse + Centralized Printer): ~a ms, Memory: ~a MB\n"
           (- t3-end t3-start)

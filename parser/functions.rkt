@@ -57,11 +57,15 @@
           fh))))
 
 (define (disassemble-bytecode port size decoder)
-  (define end-pos (+ (file-position port) size))
+  (define start-pos (file-position port))
+  (define end-pos (+ start-pos size))
   (let loop ([insts '()])
-    (if (< (file-position port) end-pos)
+    (define curr-pos (file-position port))
+    (if (< curr-pos end-pos)
         (let ([inst (decoder port)])
-          (if (eof-object? inst) (reverse insts) (loop (cons inst insts))))
+          (if (eof-object? inst)
+              (reverse insts)
+              (loop (cons (cons (- curr-pos start-pos) inst) insts))))
         (reverse insts))))
 
 (define (disassemble-function port fh decoder)

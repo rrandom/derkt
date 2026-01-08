@@ -37,5 +37,6 @@
 (define (process-function-insts hbc insts metadata f-idx ver)
   (hash 'function_index f-idx
         'instructions
-        (for/list ([inst insts] [idx (in-naturals)] [offset (in-naturals)])
-          (instruction->hash hbc inst (second inst) metadata idx offset))))
+        (for/list ([paired-inst insts] [idx (in-naturals)])
+          (define inst (cdr paired-inst))
+          (instruction->hash hbc paired-inst (second inst) metadata idx 0))))

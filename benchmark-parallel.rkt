@@ -27,8 +27,8 @@
     (lambda (in)
       (for ([f-idx (in-range start-idx end-idx)])
         (define insts (get-instructions-for-function hbc f-idx in))
-        (for ([inst insts])
-          (print-instruction hbc inst out metadata-vec)))))
+        (for ([paired-inst insts])
+          (print-instruction hbc paired-inst out metadata-vec)))))
 
   (place-channel-put p 'done))
 

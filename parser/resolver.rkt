@@ -30,7 +30,8 @@
   (hash-ref! metadata-cache ver (lambda () (get-metadata ver))))
 
 ;; Optimized resolution for S-expressions
-(define (resolve-instruction hbc inst opcode metadata)
+(define (resolve-instruction hbc paired-inst opcode metadata)
+  (define inst (cdr paired-inst)) ;; Extract raw instruction from (offset . instr)
   (define info (if (vector? metadata) (vector-ref metadata opcode) (hash-ref metadata opcode #f)))
   (unless info (error "No metadata for opcode:" opcode))
 
@@ -47,7 +48,8 @@
   (values mnemonic resolved-args))
 
 ;; High-speed printer for S-expressions
-(define (print-instruction hbc inst out metadata)
+(define (print-instruction hbc paired-inst out metadata)
+  (define inst (cdr paired-inst)) ;; Extract raw instruction
   (define opcode (second inst))
   (define info (if (vector? metadata) (vector-ref metadata opcode) (hash-ref metadata opcode #f)))
   (if info
@@ -73,8 +75,9 @@
       (fprintf out "Unknown Instruction (Opcode: ~a)\n" opcode)))
 
 ;; Converts an S-expression instruction to a JSON-compatible hash.
-(define (instruction->hash hbc inst opcode metadata index offset)
-  (let-values ([(name args) (resolve-instruction hbc inst opcode metadata)])
+(define (instruction->hash hbc paired-inst opcode metadata index _unused_offset)
+  (define offset (car paired-inst)) ;; Use the real physical offset from derkt
+  (let-values ([(name args) (resolve-instruction hbc paired-inst opcode metadata)])
     (define info (if (vector? metadata) (vector-ref metadata opcode) (hash-ref metadata opcode)))
     (define types (second info))
 
