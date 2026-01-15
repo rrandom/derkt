@@ -28,6 +28,12 @@
       (error "Unexpected EOF while reading double")
       (floating-point-bytes->real bs #f)))
 
+(define (decode-s32 port)
+  (define bs (read-bytes 4 port))
+  (if (or (eof-object? bs) (< (bytes-length bs) 4))
+      (error "Unexpected EOF while reading s32")
+      (integer-bytes->integer bs #t #f)))
+
 (define (decode-bytes port count)
   (define bs (read-bytes count port))
   (if (or (eof-object? bs) (< (bytes-length bs) count))
@@ -47,7 +53,11 @@
                [shifted-byte (arithmetic-shift byte-val (- shift))]
                [extracted (bitwise-and shifted-byte mask)]
                [new-val (bitwise-ior value (arithmetic-shift extracted written-bits))])
-          (loop new-val (+ written-bits bits-to-read) (+ bit-idx bits-to-read))))))
+           (loop new-val (+ written-bits bits-to-read) (+ bit-idx bits-to-read))))))
+
+(define (decode-uint-LE bs)
+  (for/fold ([res 0]) ([b (in-bytes bs)] [i (in-naturals)])
+    (bitwise-ior res (arithmetic-shift b (* i 8)))))
 
 ;; =============================================================================
 ;; Compile-time Helpers

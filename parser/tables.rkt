@@ -104,3 +104,12 @@
                            (if is-utf16? (decode-utf16 raw) (bytes->string/utf-8 raw))))])
         (vector-set! cache id result)
         result)))
+
+(define (get-hbc-bigint hbc id)
+  (define table (HBCFile-big-int-table hbc))
+  (define storage (HBCFile-big-int-storage hbc))
+  (define entry (vector-ref table id))
+  (define offset (BigIntTableEntry-offset entry))
+  (define len (BigIntTableEntry-length entry))
+  (define raw (subbytes storage offset (+ offset len)))
+  (decode-uint-LE raw))
