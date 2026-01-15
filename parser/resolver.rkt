@@ -30,7 +30,7 @@
   (hash-ref! metadata-cache ver (lambda () (get-metadata ver))))
 
 ;; Optimized resolution for S-expressions
-(define (resolve-instruction hbc paired-inst opcode metadata)
+(define (resolve-instruction hbc paired-inst opcode metadata [resolve-args? #t])
   (define inst (cdr paired-inst)) ;; Extract raw instruction from (offset . instr)
   (define info (if (vector? metadata) (vector-ref metadata opcode) (hash-ref metadata opcode #f)))
   (unless info (error "No metadata for opcode:" opcode))
@@ -40,10 +40,12 @@
   (define raw-args (cddr inst))
 
   (define resolved-args
-    (for/list ([arg raw-args] [type arg-types])
-      (if (string-prefix? (symbol->string type) "StringID")
-          (get-hbc-string hbc arg)
-          arg)))
+    (if resolve-args?
+        (for/list ([arg raw-args] [type arg-types])
+          (if (string-prefix? (symbol->string type) "StringID")
+              (get-hbc-string hbc arg)
+              arg))
+        raw-args))
 
   (values mnemonic resolved-args))
 
