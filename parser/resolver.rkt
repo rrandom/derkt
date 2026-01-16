@@ -9,7 +9,9 @@
 (provide resolve-instruction
          instruction->hash
          print-instruction
-         get-instruction-metadata)
+         get-instruction-metadata
+         resolve-array-buffer     ; (hbc offset count) -> list of elements
+         resolve-object-buffer)   ; (hbc key-offset val-offset count) -> list of (key val) pairs
 
 ;; Pre-calculated strings for registers and small constants (0-255)
 (define num-string-cache
@@ -48,17 +50,14 @@
                  [index (second raw-args)]
                  [count (third raw-args)]
                  [offset (fourth raw-args)])
-             ;; (printf "Debug: NewArrayWithBuffer offset=~a count=~a\n" offset count)
-             (list dest index count (read-buffer-elements hbc (HBCFile-array-buffer-storage hbc) offset count)))]
+             (list dest index count (resolve-array-buffer hbc offset count)))]
           [(or (eq? mnemonic 'NewObjectWithBuffer) (eq? mnemonic 'NewObjectWithBufferLong))
            (let ([dest (first raw-args)]
                  [size-hint (second raw-args)]
                  [count (third raw-args)]
                  [key-offset (fourth raw-args)]
                  [val-offset (fifth raw-args)])
-             (define keys (read-buffer-elements hbc (HBCFile-object-key-buffer hbc) key-offset count))
-             (define vals (read-buffer-elements hbc (HBCFile-object-value-buffer hbc) val-offset count))
-             (list dest size-hint count (map list keys vals)))]
+             (list dest size-hint count (resolve-object-buffer hbc key-offset val-offset count)))]
           [else
            (for/list ([arg raw-args] [type arg-types])
              (cond
@@ -98,6 +97,18 @@
                       [(7) (decode-s32 port)] ; Integer
                       [else (format "UnknownTag:~a" tag)]))])
             (loop (append elements new-elements)))))))
+
+;; Resolve array buffer data for NewArrayWithBuffer instruction.
+;; Returns a list of resolved elements (strings, numbers, booleans, null).
+(define (resolve-array-buffer hbc offset count)
+  (read-buffer-elements hbc (HBCFile-array-buffer-storage hbc) offset count))
+
+;; Resolve object buffer data for NewObjectWithBuffer instruction.
+;; Returns a list of (key value) pairs where keys and values are resolved.
+(define (resolve-object-buffer hbc key-offset val-offset count)
+  (define keys (read-buffer-elements hbc (HBCFile-object-key-buffer hbc) key-offset count))
+  (define vals (read-buffer-elements hbc (HBCFile-object-value-buffer hbc) val-offset count))
+  (map list keys vals))
 
 ;; High-speed printer for S-expressions
 (define (print-instruction hbc paired-inst out metadata)

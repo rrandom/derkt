@@ -12,9 +12,10 @@
 
 
 (provide (all-from-out "parser/core.rkt")
-         (all-from-out "parser/resolver.rkt")
+         (all-from-out "parser/resolver.rkt")  ; includes resolve-array-buffer, resolve-object-buffer
          (all-from-out "parser/functions.rkt")
          (all-from-out "parser/parallel.rkt")
+         (all-from-out "parser/tables.rkt")    ; includes get-hbc-string, get-hbc-bigint
          (all-from-out "model/hbc.rkt")
          (all-from-out "model/header.rkt")
          (all-from-out "model/function-info.rkt")
@@ -50,7 +51,7 @@
 
 ;; High-level API to get "HASM" (Hermes Assembly) format for a single function.
 ;; Returns: (list (offset . (Mnemonic Opcode Op1 Op2 ...)) ...)
-(define (get-function-hasm hbc f-idx)
+(define (get-function-hasm hbc f-idx [resolve-args? #t])
   (define ver (HbcHeader-version (HBCFile-header hbc)))
   (define metadata (get-instruction-metadata ver))
   (define insts (get-instructions-for-function hbc f-idx))
@@ -58,7 +59,7 @@
     (define offset (car paired-inst))
     (define inst (cdr paired-inst))
     (define-values (mnemonic resolved-args)
-      (resolve-instruction hbc paired-inst (second inst) metadata))
+      (resolve-instruction hbc paired-inst (second inst) metadata resolve-args?))
     (cons offset (cons mnemonic resolved-args))))
 
 ;; Same as get-function-hasm but returns a fundef-with-info struct
@@ -95,8 +96,8 @@
     (for/list ([paired-inst insts])
       (define offset (car paired-inst))
       (define inst (cdr paired-inst))
-      (define-values (mnemonic resolved-args)
-        (resolve-instruction hbc paired-inst (second inst) metadata resolve-args?))
-      (cons offset (cons mnemonic resolved-args))))
+       (define-values (mnemonic resolved-args)
+         (resolve-instruction hbc paired-inst (second inst) metadata resolve-args?))
+       (cons offset (cons mnemonic resolved-args))))
       
   (fundef-with-info info resolved-insts))
