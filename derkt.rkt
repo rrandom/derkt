@@ -19,6 +19,7 @@
          (all-from-out "model/hbc.rkt")
          (all-from-out "model/header.rkt")
          (all-from-out "model/function-info.rkt")
+         (all-from-out "model/function-header.rkt")
          hbc->json-serializable
          hbc->json-serializable-parallel
          get-function-hasm
