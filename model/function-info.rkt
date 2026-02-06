@@ -11,6 +11,8 @@
   #:transparent)
 
 (struct fundef-with-info
-  (info    ; function-info struct
-   ir)     ; List of instructions (HASM format)
+  (info               ; function-info struct
+   ir                 ; List of instructions (HASM format)
+   exception-handlers) ; List of ExceptionHandlerInfo (start, end, target)
   #:transparent)
+

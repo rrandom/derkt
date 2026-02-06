@@ -64,7 +64,7 @@
     (cons offset (cons mnemonic resolved-args))))
 
 ;; Same as get-function-hasm but returns a fundef-with-info struct
-;; containing metadata (param count, registers, name, etc.)
+;; containing metadata (param count, registers, name, exception handlers, etc.)
 (define (get-function-with-info-hasm hbc f-idx [resolve-args? #t])
   (define ver (HbcHeader-version (HBCFile-header hbc)))
   (define metadata (get-instruction-metadata ver))
@@ -84,6 +84,12 @@
                          (SmallFunctionHeader-frame-size fh)
                          (LargeFunctionHeader-frame-size fh)))
 
+  ;; Extract exception handlers
+  (define exception-handlers 
+    (if (SmallFunctionHeader? fh)
+        (SmallFunctionHeader-exception-handlers fh)
+        (LargeFunctionHeader-exception-handlers fh)))
+
   ;; Create info struct
   (define info (function-info f-idx
                               func-name
@@ -101,4 +107,5 @@
          (resolve-instruction hbc paired-inst (second inst) metadata resolve-args?))
        (cons offset (cons mnemonic resolved-args))))
       
-  (fundef-with-info info resolved-insts))
+  (fundef-with-info info resolved-insts exception-handlers))
+
