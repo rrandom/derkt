@@ -73,7 +73,7 @@
       ['UInt32 #'decode-u32]
       ['UInt64 #'decode-u64]
       ['Addr8  #'decode-u8]
-      ['Addr32 #'decode-u32]
+      ['Addr32 #'decode-s32]
       ['Double #'decode-double]
       ['StringIDUInt8    #'decode-u8]
       ['StringIDUInt16   #'decode-u16]
@@ -83,7 +83,7 @@
       ['FunctionIDUInt32 #'decode-u32]
       ['BigIntIDUInt16   #'decode-u16]
       ['BigIntIDUInt32   #'decode-u32]
-      ['Imm32 #'decode-u32]
+      ['Imm32 #'decode-s32]
       [else (raise-syntax-error 'get-reader-id "Unknown operand type" stx type-sym)])))
 
 ;; =============================================================================
