@@ -9,6 +9,7 @@
 (require "model/function-info.rkt")
 (require "model/function-header.rkt")
 (require "parser/tables.rkt")
+(require "common/builtins.rkt")
 
 
 (provide (all-from-out "parser/core.rkt")
@@ -20,6 +21,7 @@
          (all-from-out "model/header.rkt")
          (all-from-out "model/function-info.rkt")
          (all-from-out "model/function-header.rkt")
+         (all-from-out "common/builtins.rkt")  ; includes get-builtin-names, get-builtin-name
          hbc->json-serializable
          hbc->json-serializable-parallel
          get-function-hasm
